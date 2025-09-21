@@ -1,0 +1,100 @@
+// Elements
+const bookForm = document.getElementById("bookForm");
+const bookList = document.getElementById("bookList");
+const historyList = document.getElementById("historyList");
+const searchInput = document.getElementById("searchInput");
+const titleInput = document.getElementById("title");
+const authorInput = document.getElementById("author");
+const categoryInput = document.getElementById("category");
+
+// Data (with simple localStorage persistence)
+let books = JSON.parse(localStorage.getItem("books") || "[]");
+let history = JSON.parse(localStorage.getItem("history") || "[]");
+
+// Save helpers
+function saveBooks() {
+  localStorage.setItem("books", JSON.stringify(books));
+}
+function saveHistory() {
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+// Add book
+bookForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const title = titleInput.value.trim();
+  const author = authorInput.value.trim();
+  const category = categoryInput.value;
+  if (!title || !author) return;
+
+  books.push({ title, author, category });
+  saveBooks();
+  renderBooks();
+  bookForm.reset();
+  titleInput.focus();
+});
+
+// Render library (keeps indices aligned with the books array)
+function renderBooks() {
+  bookList.innerHTML = "";
+  const query = searchInput.value.trim().toLowerCase();
+
+  books.forEach((book, index) => {
+    const matches =
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query) ||
+      book.category.toLowerCase().includes(query);
+
+    if (!query || matches) {
+      const card = document.createElement("div");
+      card.className = "book-card";
+
+      const titleEl = document.createElement("strong");
+      titleEl.textContent = book.title;
+
+      const authorEl = document.createElement("div");
+      authorEl.innerHTML = `<em>${book.author}</em>`;
+
+      const catEl = document.createElement("div");
+      catEl.textContent = book.category;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Borrow";
+      btn.addEventListener("click", () => borrowBook(index));
+
+      card.appendChild(titleEl);
+      card.appendChild(authorEl);
+      card.appendChild(catEl);
+      card.appendChild(btn);
+
+      bookList.appendChild(card);
+    }
+  });
+}
+
+// Borrow book
+function borrowBook(index) {
+  const book = books[index];
+  if (!book) return;
+  const entry = `${book.title} by ${book.author} borrowed on ${new Date().toLocaleDateString()}`;
+  history.push(entry);
+  saveHistory();
+  renderHistory();
+}
+
+// Render history
+function renderHistory() {
+  historyList.innerHTML = "";
+  history.forEach((entry) => {
+    const li = document.createElement("li");
+    li.textContent = entry;
+    historyList.appendChild(li);
+  });
+}
+
+// Search input
+searchInput.addEventListener("input", renderBooks);
+
+// Initial render
+renderBooks();
+renderHistory();
