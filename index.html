@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Book Library</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📚 My Book Library</h1>
+    <input type="text" id="searchInput" placeholder="Search books..." />
+  </header>
+
+  <section>
+    <h2>Add a Book</h2>
+    <form id="bookForm">
+      <input type="text" id="title" placeholder="Title" required />
+      <input type="text" id="author" placeholder="Author" required />
+      <select id="category">
+        <option value="Fiction">Fiction</option>
+        <option value="Non-fiction">Non-fiction</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Biography">Biography</option>
+      </select>
+      <button type="submit">Add Book</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Library</h2>
+    <div id="bookList"></div>
+  </section>
+
+  <section>
+    <h2>Borrowing History</h2>
+    <ul id="historyList"></ul>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
